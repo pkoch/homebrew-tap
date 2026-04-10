@@ -2,10 +2,11 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
-manifest="$repo_root/release-inputs.json"
+manifest="${repo_root}/release-inputs.json"
 output=""
 
-while [[ $# -gt 0 ]]; do
+while [[ $# -gt 0 ]]
+do
   case "$1" in
     --output)
       output="$2"
@@ -22,9 +23,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "$output" ]] || { echo "--output is required" >&2; exit 1; }
+[[ -n "${output}" ]] || {
+  echo "--output is required" >&2
+  exit 1
+}
 
-dmg_url="$(python3 - "$manifest" <<'PY'
+dmg_url="$(
+  python3 - "${manifest}" <<'PY'
 import json
 import sys
 
@@ -33,7 +38,8 @@ print(data["macfuse"]["dmg_url"])
 PY
 )"
 
-dmg_sha256="$(python3 - "$manifest" <<'PY'
+dmg_sha256="$(
+  python3 - "${manifest}" <<'PY'
 import json
 import sys
 
@@ -42,7 +48,8 @@ print(data["macfuse"]["sha256"])
 PY
 )"
 
-pkg_path="$(python3 - "$manifest" <<'PY'
+pkg_path="$(
+  python3 - "${manifest}" <<'PY'
 import json
 import sys
 
@@ -53,17 +60,19 @@ PY
 
 tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/homebrew-tap-macfuse.XXXXXX")"
 cleanup() {
-  if [[ -n "${mount_point:-}" && -d "${mount_point:-}" ]]; then
-    hdiutil detach "$mount_point" >/dev/null 2>&1 || true
+  if [[ -n "${mount_point:-}" && -d "${mount_point:-}" ]]
+  then
+    hdiutil detach "${mount_point}" >/dev/null 2>&1 || true
   fi
-  rm -rf "$tmp_dir"
+  rm -rf "${tmp_dir}"
 }
 trap cleanup EXIT
 
-dmg_path="$tmp_dir/macfuse.dmg"
-curl -L --fail --silent --show-error "$dmg_url" -o "$dmg_path"
+dmg_path="${tmp_dir}/macfuse.dmg"
+curl -L --fail --silent --show-error "${dmg_url}" -o "${dmg_path}"
 
-actual_sha256="$(python3 - "$dmg_path" <<'PY'
+actual_sha256="$(
+  python3 - "${dmg_path}" <<'PY'
 import hashlib
 import pathlib
 import sys
@@ -77,17 +86,21 @@ print(digest.hexdigest())
 PY
 )"
 
-if [[ "$actual_sha256" != "$dmg_sha256" ]]; then
+if [[ "${actual_sha256}" != "${dmg_sha256}" ]]
+then
   echo "macFUSE DMG checksum mismatch" >&2
   exit 1
 fi
 
-hdiutil attach -nobrowse -readonly "$dmg_path" > "$tmp_dir/attach.txt"
-mount_point="$(awk '/\/Volumes\// { mp = $NF } END { print mp }' "$tmp_dir/attach.txt")"
-[[ -n "$mount_point" ]] || { echo "failed to resolve macFUSE mount point" >&2; exit 1; }
+hdiutil attach -nobrowse -readonly "${dmg_path}" >"${tmp_dir}/attach.txt"
+mount_point="$(awk '/\/Volumes\// { mp = $NF } END { print mp }' "${tmp_dir}/attach.txt")"
+[[ -n "${mount_point}" ]] || {
+  echo "failed to resolve macFUSE mount point" >&2
+  exit 1
+}
 
-pkgutil --expand-full "$mount_point/$pkg_path" "$tmp_dir/pkg" >/dev/null
+pkgutil --expand-full "${mount_point}/${pkg_path}" "${tmp_dir}/pkg" >/dev/null
 
-mkdir -p "$output/include" "$output/lib"
-cp -R "$tmp_dir/pkg/Core.pkg/Payload/usr/local/include/." "$output/include/"
-cp -R "$tmp_dir/pkg/Core.pkg/Payload/usr/local/lib/." "$output/lib/"
+mkdir -p "${output}/include" "${output}/lib"
+cp -R "${tmp_dir}/pkg/Core.pkg/Payload/usr/local/include/." "${output}/include/"
+cp -R "${tmp_dir}/pkg/Core.pkg/Payload/usr/local/lib/." "${output}/lib/"
