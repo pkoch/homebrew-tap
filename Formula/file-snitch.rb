@@ -11,7 +11,15 @@ class FileSnitch < Formula
   depends_on "zig" => :build
   depends_on "pass"
 
+  resource "macfuse" do
+    on_macos do
+      url "https://github.com/macfuse/macfuse/releases/download/macfuse-5.1.1/macfuse-5.1.1.dmg"
+      sha256 "cdd60135ba49467e6f17cbf97d843d7d9e0ab0eda022861d39deaa3cee53e359"
+    end
+  end
+
   def install
+    stage_macfuse_sdk if OS.mac?
     system "zig", "build", *std_zig_args
   end
 
@@ -38,5 +46,33 @@ class FileSnitch < Formula
   test do
     output = shell_output("#{bin}/file-snitch version 2>&1")
     assert_match "file-snitch", output
+  end
+
+  private
+
+  def stage_macfuse_sdk
+    sdk_root = buildpath/"macfuse-sdk"
+
+    macfuse = resource("macfuse")
+    macfuse.fetch
+    dmg = macfuse.cached_download
+    mountpoint = Utils.safe_popen_read("hdiutil", "attach", "-nobrowse", "-readonly", "-plist", dmg).then do |plist|
+      plist[%r{<key>mount-point</key>\s*<string>([^<]+)</string>}, 1]
+    end
+    odie "failed to mount macFUSE DMG" if mountpoint.blank?
+
+    begin
+      pkg_path = "#{mountpoint}/Extras/macFUSE 5.1.1.pkg"
+      system "pkgutil", "--expand-full", pkg_path, buildpath/"macfuse-pkg"
+      mkdir_p sdk_root/"include"
+      mkdir_p sdk_root/"lib"
+      cp_r (buildpath/"macfuse-pkg/Core.pkg/Payload/usr/local/include/.").children, sdk_root/"include"
+      cp_r (buildpath/"macfuse-pkg/Core.pkg/Payload/usr/local/lib/.").children, sdk_root/"lib"
+    ensure
+      system "hdiutil", "detach", mountpoint
+    end
+
+    ENV["FILE_SNITCH_FUSE_INCLUDE_DIR"] = (sdk_root/"include").to_s
+    ENV["FILE_SNITCH_FUSE_LIB_DIR"] = (sdk_root/"lib").to_s
   end
 end
