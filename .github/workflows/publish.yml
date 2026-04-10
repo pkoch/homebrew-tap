@@ -1,7 +1,7 @@
 name: brew pr-pull
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - labeled
 
@@ -34,7 +34,7 @@ jobs:
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PULL_REQUEST: ${{ github.event.pull_request.number }}
-        run: brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
+        run: env -u GITHUB_SHA brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
 
       - name: Push commits
         uses: Homebrew/actions/git-try-push@main
