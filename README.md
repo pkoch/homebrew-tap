@@ -1,18 +1,23 @@
-# Pkoch Tap
+# pkoch/tap
 
-## How do I install these formulae?
+Homebrew formulae published by pkoch live here.
 
-`brew install pkoch/tap/<formula>`
+## Install
 
-Or `brew tap pkoch/tap` and then `brew install <formula>`.
-
-Or, in a `brew bundle` `Brewfile`:
-
-```ruby
-tap "pkoch/tap"
-brew "<formula>"
+```bash
+brew install pkoch/tap/file-snitch
 ```
 
-## Documentation
+Or explicitly tap first:
 
-`brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
+```bash
+brew tap pkoch/tap
+brew install pkoch/tap/file-snitch
+```
+
+## Notes
+
+- `file-snitch` currently builds from the tagged release source tarball.
+- Bottles are a follow-up.
+- Runtime details and service helpers live in the upstream app repo:
+  - https://github.com/pkoch/file-snitch
