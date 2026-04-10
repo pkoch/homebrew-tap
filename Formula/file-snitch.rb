@@ -19,8 +19,9 @@ class FileSnitch < Formula
   end
 
   def install
-    stage_macfuse_sdk if OS.mac?
+    sdk_root = stage_macfuse_sdk if OS.mac?
     system "zig", "build", *std_zig_args
+    install_private_macfuse(sdk_root) if OS.mac?
   end
 
   def caveats
@@ -74,5 +75,15 @@ class FileSnitch < Formula
 
     ENV["FILE_SNITCH_FUSE_INCLUDE_DIR"] = (sdk_root/"include").to_s
     ENV["FILE_SNITCH_FUSE_LIB_DIR"] = (sdk_root/"lib").to_s
+    sdk_root
+  end
+
+  def install_private_macfuse(sdk_root)
+    private_dylib = libexec/"libfuse.2.dylib"
+    libexec.install sdk_root/"lib/libfuse.2.dylib"
+    MachO::Tools.change_dylib_id(private_dylib, "@loader_path/libfuse.2.dylib")
+    MachO::Tools.change_install_name(bin/"file-snitch",
+                                     "/usr/local/lib/libfuse.2.dylib",
+                                     "@loader_path/../libexec/libfuse.2.dylib")
   end
 end
