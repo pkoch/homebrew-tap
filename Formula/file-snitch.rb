@@ -7,7 +7,7 @@ class FileSnitch < Formula
   # stable-release-end
   head "https://github.com/pkoch/file-snitch.git", branch: "master"
 
-  depends_on "libfuse" => :build if OS.linux?
+  depends_on "libfuse" if OS.linux?
   depends_on "pkgconf" => :build
   depends_on "zig" => :build
   depends_on "pass"
