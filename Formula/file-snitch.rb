@@ -40,8 +40,9 @@ class FileSnitch < Formula
         file-snitch agent --foreground
         file-snitch run prompt --foreground
 
-      The repo also ships per-user service helpers under `scripts/`
-      for `launchd` and `systemd --user`.
+      For per-user service setup, see:
+
+        https://github.com/pkoch/file-snitch/blob/master/docs/services.md
     EOS
   end
 
