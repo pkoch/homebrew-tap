@@ -21,6 +21,12 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Reset tap checkout to main
+        run: |
+          tap_repo="$(brew --repository "$GITHUB_REPOSITORY")"
+          git -C "$tap_repo" fetch origin main
+          git -C "$tap_repo" checkout -B main origin/main
+
       - name: Set up git
         uses: Homebrew/actions/git-user-config@main
 
