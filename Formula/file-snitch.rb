@@ -44,8 +44,8 @@ class FileSnitch < Formula
       Prompting is handled by the local agent service. Bootstrap it
       manually with:
 
-        file-snitch agent --foreground
-        file-snitch run prompt --foreground
+        file-snitch agent
+        file-snitch run prompt
 
       For per-user service setup, see:
 

@@ -28,6 +28,14 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract pinned macFUSE SDK
+        if: runner.os == 'macOS'
+        run: |
+          chmod +x ./scripts/extract-macfuse-sdk.sh
+          ./scripts/extract-macfuse-sdk.sh --output "$RUNNER_TEMP/macfuse-sdk"
+          echo "FILE_SNITCH_FUSE_INCLUDE_DIR=$RUNNER_TEMP/macfuse-sdk/include" >> "$GITHUB_ENV"
+          echo "FILE_SNITCH_FUSE_LIB_DIR=$RUNNER_TEMP/macfuse-sdk/lib" >> "$GITHUB_ENV"
+
       - name: Cache Homebrew Bundler RubyGems
         uses: actions/cache@v4
         with:
