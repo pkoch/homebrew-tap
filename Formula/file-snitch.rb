@@ -2,8 +2,8 @@ class FileSnitch < Formula
   desc "Guarded FUSE mounts for a user's secret-bearing files"
   homepage "https://github.com/pkoch/file-snitch"
   # stable-release-start
-  url "https://github.com/pkoch/file-snitch/releases/download/v0.2.0/file-snitch-0.2.0-source.tar.gz"
-  sha256 "331363afcf8010105b2300742e87a29282f3169bf37330630b37026cc8b1c31e"
+  url "https://github.com/pkoch/file-snitch/releases/download/v0.2.1/file-snitch-0.2.1-source.tar.gz"
+  sha256 "d9a0361aff7f103138cd5ee7cea3ee418d26f7e399a2a086c9c84bb918c234d0"
   # stable-release-end
   head "https://github.com/pkoch/file-snitch.git", branch: "master"
 
@@ -14,7 +14,7 @@ class FileSnitch < Formula
   end
 
   depends_on "pkgconf" => :build
-  depends_on "zig" => :build
+  depends_on "anyzig" => :build
   depends_on "libfuse" if OS.linux?
   depends_on "pass"
 
