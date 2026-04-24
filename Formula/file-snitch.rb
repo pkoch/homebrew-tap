@@ -14,7 +14,7 @@ class FileSnitch < Formula
   end
 
   depends_on "pkgconf" => :build
-  depends_on "anyzig" => :build
+  depends_on "zig@0.15" => :build
   depends_on "libfuse" if OS.linux?
   depends_on "pass"
 
