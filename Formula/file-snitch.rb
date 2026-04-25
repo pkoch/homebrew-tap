@@ -2,19 +2,19 @@ class FileSnitch < Formula
   desc "Guarded FUSE mounts for a user's secret-bearing files"
   homepage "https://github.com/pkoch/file-snitch"
   # stable-release-start
-  url "https://github.com/pkoch/file-snitch/releases/download/v0.2.3/file-snitch-0.2.3-source.tar.gz"
-  sha256 "36c3e4e531b2416fa26672a893caaa55976b51032b0a827fc010c26f8263a69d"
+  url "https://github.com/pkoch/file-snitch/releases/download/v0.3.0/file-snitch-0.3.0-source.tar.gz"
+  sha256 "bc88049bfff5547f5e5e0f92e4abc7e4807aca6619ef5e8257ca3555a229715a"
   # stable-release-end
   head "https://github.com/pkoch/file-snitch.git", branch: "master"
 
   bottle do
-    root_url "https://github.com/pkoch/homebrew-tap/releases/download/file-snitch-0.2.3"
+    root_url "https://github.com/pkoch/homebrew-tap/releases/download/file-snitch-0.3.0"
     sha256                               arm64_tahoe:  "7eae2a5348961dcdd23c4239a1789040885d06d211bade9797c0c282118e9928"
     sha256 cellar: :any_skip_relocation, x86_64_linux: "761f116052ed097d7d58abe03f10d074bf8cf9d255e4cbb498026c0876d63aaf"
   end
 
   depends_on "pkgconf" => :build
-  depends_on "zig@0.15" => :build
+  depends_on "zig@0.16" => :build
   depends_on "libfuse" if OS.linux?
   depends_on "pass"
 
