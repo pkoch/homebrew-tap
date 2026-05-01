@@ -9,8 +9,8 @@ class FileSnitch < Formula
 
   bottle do
     root_url "https://github.com/pkoch/homebrew-tap/releases/download/file-snitch-0.8.1"
-    sha256                               arm64_tahoe:  "5d4aeab7016d578e708ab61a614b7e8bc0c47c27bd63844690844c1292b7b0a2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "052cad16ba4644e1d86dd9ff618c9243b21602ffe377cb2cff5c2305a38ef35b"
+    sha256                               arm64_tahoe:  "203d18bf103e222879357bb34dd8373e0184576233acd3779e23815334f94510"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "480417444b1bd9f7b42b87fbb5fb2822735ee61d90d0ab457383ab77d0ede167"
   end
 
   depends_on "pkgconf" => :build
